@@ -55,7 +55,6 @@ bash ./dev_scripts/run_tests.sh
 ```
 monorepo/
 ├── .env                 # all env vars here
-├── data/                # dir to hold arbitrary data files
 ├── backend/             # django / orm
 │   └── api/             
 │       └── <django stuff>.py    
@@ -64,9 +63,10 @@ monorepo/
 │   │   ├── <ui>.jsx     
 │   │   └── lib/*.js     # common front end utils   
 │   └── vite.config.js
-├── dev_scripts/           
-│   └── setup_dev_env.sh  # setup the dev env
-│   └── run_dev_env.sh    # run the dev servers
+├── data/                # dir to hold arbitrary data files
+└── dev_scripts/           
+    └── setup_dev_env.sh  # setup the dev env
+    └── run_dev_env.sh    # run the dev servers
 ```
 
 ## If I had more time, I'd
