@@ -1,0 +1,101 @@
+@use 'colors' as *;
+
+.comment-modal {
+  border: none;
+  border-radius: 12px;
+  padding: 0;
+  max-width: 500px;
+  width: 90%;
+  background-color: $color-bg-primary;
+  box-shadow: 0 4px 20px $color-modal-shadow;
+
+  &::backdrop {
+    background-color: $color-modal-backdrop;
+  }
+
+  .comment-form {
+    padding: 2rem;
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      color: $color-text-primary;
+      font-size: 1.5rem;
+    }
+  }
+
+  .form-group {
+    margin-bottom: 1.25rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: $color-text-secondary;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    textarea,
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid $color-border-primary;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-family: inherit;
+      background-color: $color-bg-secondary;
+      color: $color-text-primary;
+      transition: border-color 0.3s;
+
+      &:focus {
+        outline: none;
+        border-color: $color-primary;
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+  }
+
+  .cancel-btn, .submit-btn {
+    padding: 0.65rem 1.5rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  .cancel-btn {
+    background-color: $color-bg-quaternary;
+    color: $color-text-secondary;
+
+    &:hover {
+      background-color: $color-bg-quinary;
+    }
+  }
+
+  .submit-btn {
+    background-color: $color-primary;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background-color: $color-primary-hover;
+    }
+  }
+}

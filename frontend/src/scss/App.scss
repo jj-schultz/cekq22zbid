@@ -1,0 +1,58 @@
+@use 'colors' as *;
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+
+  .app {
+    max-width: 600px;
+    min-height: 800px;
+    margin: 0 auto;
+
+    .app-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 2rem;
+
+      h3 {
+        margin: 0;
+        font-size: 1.5rem;
+      }
+    }
+
+    .add-comment-btn {
+      background-color: $color-primary;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: $color-primary-hover;
+      }
+    }
+
+    .loading, .error {
+      text-align: center;
+      padding: 2rem;
+      font-size: 1.2rem;
+    }
+
+    .error {
+      color: $color-error;
+    }
+
+    .comments-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+}
+
