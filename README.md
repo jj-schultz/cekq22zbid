@@ -35,13 +35,12 @@ bash ./dev_scripts/reingest_comment.sh
 
 
 ## Tests
-
+Right now, only django tests are implemented.  To run the test suite, execute
 ```bash
-cd backend
-python manage.py test
+bash ./dev_scripts/run_tests.sh
 ```
 
-## Tech Stack
+## Stack
 
 ### Backend
 - **psql** 
