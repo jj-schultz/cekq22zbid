@@ -2,7 +2,7 @@
 set -euo pipefail
 source .env
 
-(cd "$BACKEND_DIR" ** source .venv/bin/activate && python manage.py runserver $DJANGO_PORT) &
+(cd "$BACKEND_DIR" && source .venv/bin/activate && python manage.py runserver $DJANGO_PORT) &
 DJANGO_PID=$!
 
 (cd $FRONTEND_DIR && npm run dev) &
