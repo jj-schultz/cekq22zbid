@@ -14,6 +14,7 @@ this script will:
 - setup the db
 - run the db migrations
 - run the tests
+- ingest comments from `./data/comments.json`
 
 ### 2. Run Dev Servers
 run this to serve the ui as you develop
@@ -24,6 +25,14 @@ bash ./dev_scripts/run_dev_env.sh
 
 starts both vite and django:
 - Vite frontend: http://localhost:5173 talking to Django listening to http://127.0.0.1:8000
+
+### Ingesting the comments file
+The raw comments file lives at `./data/comments.json`.  To re-ingest this file, execute
+
+```bash
+bash ./dev_scripts/reingest_comment.sh
+```
+
 
 ## Tests
 
