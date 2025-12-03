@@ -5,10 +5,14 @@ async function doGet(url) {
     const response = await fetch(`${API_BASE_URL}${url}`, {
         credentials: 'include'
     });
+    
+    const resp_data = await response.json();
+    
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(resp_data.error || `HTTP error! status: ${response.status}`);
     }
-    return await response.json();
+
+    return resp_data;
 }
 
 async function doPost(url, data = {}) {
@@ -21,12 +25,13 @@ async function doPost(url, data = {}) {
         body: JSON.stringify(data)
     });
 
+    const resp_data = await response.json();
+    
     if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        throw new Error(resp_data.error || `HTTP error! status: ${response.status}`);
     }
 
-    return response.json();
+    return resp_data;
 }
 
 function formatDate(dateString) {
