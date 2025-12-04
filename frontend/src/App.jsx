@@ -2,37 +2,47 @@ import './scss/App.scss'
 import './scss/CommentModal.scss'
 import Comment from './Comment'
 
-import {useEffect, useRef} from 'react'
+import {useRef} from 'react'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {useForm} from 'react-hook-form'
-import {deleteComment, fetchComments, upsertComment} from './lib/comments-api.js'
+import {doPost, doGet} from "./lib/utils.js";
 
 function App() {
+    const queryClient = useQueryClient();
+    const dialogRef = useRef(null);
+    
     const {register, handleSubmit, reset, setValue, watch} = useForm({
         defaultValues: {comment_id: null, text: "", image: ""}
     });
 
-    const dialogRef = useRef(null);
-
-    const queryClient = useQueryClient();
-
     const commentUpsertMutation = useMutation({
-        mutationFn: upsertComment,
+        mutationFn: async ({comment_id, text, image}) => {
+            await doPost(`/api/v1/comments/upsert/`, {
+                comment_id,
+                text,
+                image
+            });
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ['comments']});
         },
     });
 
     const deleteMutation = useMutation({
-        mutationFn: deleteComment,
+        mutationFn: async ({commentId}) => {
+            await doPost(`/api/v1/comments/${commentId}/delete/`);
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ['comments']});
         },
     });
 
     const {data: comments = [], isLoading, error} = useQuery({
-        queryKey: ['comments'],
-        queryFn: fetchComments,
+        queryFn: async () => {
+            const response = await doGet(`/api/v1/comments/`);
+            return response.comments;
+        },
+        queryKey: ['comments']
     });
 
     const handleDeleteComment = (comment) => {
@@ -91,7 +101,8 @@ function App() {
             <div className="comments-container">
                 {
                     comments.length === 0
-                        ? (<img alt="No Comment"
+                        ? (<img className="no-comment-img" 
+                                alt="No Comment"
                                 src="https://t3.ftcdn.net/jpg/00/89/38/36/360_F_89383607_WPQtq9NF1O2Vvou7CT1WgjCtQooeXVju.jpg"/>)
                         : (
                             comments.map((comment) => (
