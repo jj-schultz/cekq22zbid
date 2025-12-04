@@ -16,8 +16,8 @@ function App() {
     });
 
     const commentUpsertMutation = useMutation({
-        mutationFn: async ({comment_id, text, image}) => {
-            await doPost(`/api/v1/comments/upsert/`, {
+        mutationFn: ({comment_id, text, image}) => {
+            return doPost(`/api/v1/comments/upsert/`, {
                 comment_id,
                 text,
                 image
@@ -29,8 +29,8 @@ function App() {
     });
 
     const deleteMutation = useMutation({
-        mutationFn: async ({commentId}) => {
-            await doPost(`/api/v1/comments/${commentId}/delete/`);
+        mutationFn: ({commentId}) => {
+            return doPost(`/api/v1/comments/${commentId}/delete/`);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ['comments']});
