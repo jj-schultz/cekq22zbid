@@ -35,10 +35,8 @@ def import_comments(comment_file: Path, reset=False):
         )
         author_id_map[p.name] = p.id
     
-    for comment_data in comment_datas:
-        Comment.objects.update_or_create(
-            id=comment_data.get("id"),
-            defaults={
+    for comment_data in sorted(comment_datas, key=lambda c: c.get("id")):
+        d = {
                 "author_id": author_id_map.get(comment_data.get("author")),
                 "text": comment_data.get("text"),
                 "created_date": comment_data.get("date"),
@@ -46,6 +44,13 @@ def import_comments(comment_file: Path, reset=False):
                 "likes": comment_data.get("likes"),
                 "image": comment_data.get("image")
             }
+        
+        if comment_data.get("parent"):
+            d["parent_comment_id"] = comment_data.get("parent")
+            
+        Comment.objects.update_or_create(
+            id=comment_data.get("id"),
+            defaults=d
         )
     logging.info(f"Have {Comment.objects.count()} after ingesting {comment_file}")
 

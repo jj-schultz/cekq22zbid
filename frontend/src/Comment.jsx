@@ -1,9 +1,15 @@
 import './scss/Comment.scss'
 import {formatDate} from './lib/utils.js';
 
-function Comment({comment, onEdit, onDelete}) {
+function Comment({comment, onEdit, onDelete, commentIndent}) {
+    const style = {
+        "marginLeft": `${commentIndent * 1.5}rem`
+    }
+    if (commentIndent){
+        style['marginTop'] = "-1rem"
+    }
     return (
-        <div className="comment">
+        <div className="comment" style={style}>
             <div className="comment-header">
                 <span className="comment-author">{comment.author.name}</span>
                 <div className="comment-header-right">

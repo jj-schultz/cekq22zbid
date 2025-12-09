@@ -10,6 +10,7 @@ class Person(models.Model):
 
 class Comment(models.Model):
     id = models.TextField(primary_key=True)
+    parent_comment = models.ForeignKey('Comment', null=True, on_delete=models.CASCADE)
     author = models.ForeignKey(Person, on_delete=models.CASCADE)
     text = models.TextField()
     created_date = models.DateTimeField()
@@ -20,6 +21,7 @@ class Comment(models.Model):
     def to_dict(self):
         return {
             "id": self.id,
+            "parent_comment_id": self.parent_comment_id,
             "author": {
                 "id": str(self.author.id),
                 "name": self.author.name

@@ -2,15 +2,16 @@ import './scss/App.scss'
 import './scss/CommentModal.scss'
 import Comment from './Comment'
 
-import {useRef} from 'react'
+import {useMemo, useRef, useState} from 'react'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {useForm} from 'react-hook-form'
-import {doPost, doGet} from "./lib/utils.js";
+import {doGet, doPost} from "./lib/utils.js";
 
 function App() {
     const queryClient = useQueryClient();
     const dialogRef = useRef(null);
-    
+    const [searchString, setSearchString] = useState("");
+
     const {register, handleSubmit, reset, setValue, watch} = useForm({
         defaultValues: {comment_id: null, text: "", image: ""}
     });
@@ -45,6 +46,55 @@ function App() {
         queryKey: ['comments']
     });
 
+    const commentsTree = useMemo(() => {
+        comments.sort(
+            (c1, c2) => {
+                return parseInt(c1.id) - parseInt(c2.id)
+            }
+        );
+
+        const commendsById = {}
+        comments.forEach(c => {
+            commendsById[c.id] = c;
+        })
+
+        // when I find a comment with text that contains search string
+        // include the parent and all children deep
+
+        const filteredComments = comments.filter(c => c.text.indexOf(searchString) >= 0);
+
+        const commentTree = {}
+        filteredComments.forEach(c => {
+            const root_comment = c.parent_comment_id
+                ? commendsById[c.parent_comment_id]
+                : c;
+
+
+            commendsById[c.id] = c;
+            c.child_comments = [];
+            if (!c.parent_comment_id) {
+                commentTree[c.id] = c
+            } else {
+                commendsById[c.parent_comment_id].child_comments.push(c)
+            }
+        })
+        
+        return commentTree;
+    }, [comments])
+
+    const commentsByParentId = useMemo(() => {
+
+
+        return comments.reduce((cbp, c) => {
+            if (!cbp[c.parent_comment_id]) {
+                cbp[c.parent_comment_id] = []
+            }
+            cbp[c.parent_comment_id].push(c)
+            return cbp;
+        }, {});
+
+    }, [comments])
+
     const handleDeleteComment = (comment) => {
         deleteMutation.mutate({
             commentId: comment.id
@@ -56,6 +106,9 @@ function App() {
         setValue("text", comment.text);
         setValue("image", comment.image || "");
         dialogRef.current?.showModal();
+    };
+
+    const handleSearch = () => {
     };
 
     const handleAddComment = () => {
@@ -91,28 +144,47 @@ function App() {
         return <div className="error">Error loading comments: {error.message}</div>;
     }
 
+    const renderComments = (parent_comment = null, commentIndent = 0) => {
+        const children = parent_comment
+            ? parent_comment.child_comments
+            : Object.values(commentsTree)
+        ;
+
+        if (!children) {
+            return [];
+        }
+
+        return children.flatMap((comment) => [
+            (
+                <Comment
+                    commentIndent={commentIndent}
+                    key={comment.id}
+                    comment={comment}
+                    onEdit={handleEditComment}
+                    onDelete={handleDeleteComment}
+                />
+            ),
+            ...renderComments(comment, commentIndent + 1)]
+        );
+    }
+
     return (
         <div className="app">
             <div className="app-header">
                 <h3>Comments</h3>
+                {/*<input type="text" value={searchString} onChange={handleSearch} placeholder="Search"/>*/}
                 <button onClick={handleAddComment} className="add-comment-btn">Add Comment</button>
             </div>
 
             <div className="comments-container">
                 {
                     comments.length === 0
-                        ? (<img className="no-comment-img" 
+                        ? (<img className="no-comment-img"
                                 alt="No Comment"
                                 src="https://t3.ftcdn.net/jpg/00/89/38/36/360_F_89383607_WPQtq9NF1O2Vvou7CT1WgjCtQooeXVju.jpg"/>)
                         : (
-                            comments.map((comment) => (
-                                <Comment
-                                    key={comment.id}
-                                    comment={comment}
-                                    onEdit={handleEditComment}
-                                    onDelete={handleDeleteComment}
-                                />
-                            ))
+                            renderComments()
+
                         )
                 }
             </div>

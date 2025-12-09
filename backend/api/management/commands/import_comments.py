@@ -8,7 +8,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--comment_file',
             type=str,
-            default="../data/comments.json",
+            default="../data/comments2.json",
             required=False
         )
         
